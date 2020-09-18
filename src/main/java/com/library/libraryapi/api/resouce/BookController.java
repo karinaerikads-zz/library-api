@@ -1,5 +1,6 @@
 package com.library.libraryapi.api.resouce;
 
+import com.library.libraryapi.BusinessException;
 import com.library.libraryapi.api.dto.BookDTO;
 import com.library.libraryapi.api.exception.APIErrors;
 import com.library.libraryapi.model.entity.Book;
@@ -43,5 +44,11 @@ public class BookController {
         List<ObjectError> allErrors = bindingResult.getAllErrors();
 
         return new APIErrors(bindingResult);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIErrors handleValidadionExceptions(BusinessException exception){
+        return new APIErrors(exception);
     }
 }
