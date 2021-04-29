@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookDTO create(@RequestBody @Validated BookDTO bookDTO){
+    public BookDTO create(@RequestBody @Valid BookDTO bookDTO){
         Book book = modelMapper.map(bookDTO, Book.class);
         book = bookService.save(book);
         return modelMapper.map(book, BookDTO.class);
@@ -41,8 +42,6 @@ public class BookController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrors handleValidadionExceptions(MethodArgumentNotValidException exception){
         BindingResult bindingResult = exception.getBindingResult();
-        List<ObjectError> allErrors = bindingResult.getAllErrors();
-
         return new APIErrors(bindingResult);
     }
 

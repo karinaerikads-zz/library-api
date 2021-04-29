@@ -19,4 +19,8 @@ public class APIErrors {
     public APIErrors(BusinessException businessException) {
         this.errors = Arrays.asList(businessException.getMessage());
     }
+
+    public List<String> getErrors() {
+        return errors;
+    }
 }

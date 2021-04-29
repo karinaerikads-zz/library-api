@@ -3,6 +3,8 @@ package com.library.libraryapi.api.dto;
 import com.sun.istack.NotNull;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+
 @Getter
 @Setter
 @Data
@@ -12,11 +14,11 @@ import lombok.*;
 public class BookDTO {
 
     private Long id;
-    @NotNull
+    @NotEmpty
     private String title;
-    @NotNull
+    @NotEmpty
     private String author;
-    @NotNull
+    @NotEmpty
     private String isbn;
 
 
