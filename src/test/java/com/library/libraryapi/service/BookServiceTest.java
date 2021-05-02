@@ -35,7 +35,7 @@ public class BookServiceTest {
     public void saveBookTest(){
         //Cenário
         Book book = createValidBook();
-        Mockito.when(bookRepository.existsByISBN(Mockito.anyString())).thenReturn(false);
+        Mockito.when(bookRepository.existsByIsbn(Mockito.anyString())).thenReturn(false);
         Mockito.when(bookRepository.save(book)).thenReturn(
                 Book.builder().id(1l)
                         .isbn("1234")
@@ -59,7 +59,7 @@ public class BookServiceTest {
     public void sholdNotSaveABookWithDuplicatedISBN(){
         //Cenário
         Book book = createValidBook();
-        Mockito.when(bookRepository.existsByISBN(Mockito.anyString())).thenReturn(true);
+        Mockito.when(bookRepository.existsByIsbn(Mockito.anyString())).thenReturn(true);
 
         //Execução
         Throwable exception =  Assertions.catchThrowable(() -> bookService.save(book));
