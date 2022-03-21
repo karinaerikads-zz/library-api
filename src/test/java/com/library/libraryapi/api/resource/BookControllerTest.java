@@ -168,6 +168,50 @@ public class BookControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Sucesso ao atualizar um livro")
+    public void updateBookTest() throws Exception{
+        Long id = 1l;
+        String json = new ObjectMapper().writeValueAsString(createNewBook());
+
+        Book book = Book.builder().id(1l).title("Some title").author("some author").isbn("123456").build();
+        BDDMockito.given(bookService.getById(id)).willReturn(Optional.of(book));
+        Book bookUpdate = Book.builder().id(1l).title("O Mulato").author("Azevedo").isbn("123456").build();
+        BDDMockito.given(bookService.update(book)).willReturn(bookUpdate);
+
+        MockHttpServletRequestBuilder request =  MockMvcRequestBuilders
+                .put(BOOK_API.concat("/" + 1))
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("title").value(createNewBook().getTitle()))
+                .andExpect(jsonPath("author").value(createNewBook().getAuthor()))
+                .andExpect(jsonPath("isbn").value("123456"));
+
+    }
+
+    @Test
+    @DisplayName("Erro ao atualizar livro inexistente")
+    public void updateInexistentBookTest() throws Exception{
+
+        String json = new ObjectMapper().writeValueAsString(createNewBook());
+        BDDMockito.given(bookService.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request =  MockMvcRequestBuilders
+                .put(BOOK_API.concat("/" + 1))
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isNotFound());
+
+    }
+
     private BookDTO createNewBook() {
         return BookDTO.builder().author("Azevedo").title("O Mulato").isbn("123456").build();
     }
