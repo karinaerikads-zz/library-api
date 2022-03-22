@@ -58,6 +58,16 @@ public class BookRepositoryTest {
         assertThat(foundBook.isPresent()).isTrue();
     }
 
+    @Test
+    @DisplayName("Salvar livro com sucesso")
+    public void saveBookTest(){
+        Book book = createNewBook();
+
+        Book savedBook = bookRepository.save(book);
+
+        assertThat(savedBook.getId()).isNotNull();
+    }
+
     private Book createNewBook() {
         return Book.builder()
                 .isbn("1234")
