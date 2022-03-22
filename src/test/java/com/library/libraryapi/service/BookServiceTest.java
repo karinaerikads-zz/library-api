@@ -35,7 +35,6 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve salvar um livro")
     public void saveBookTest(){
-        //Cenário
         Book book = createValidBook();
         Mockito.when(bookRepository.existsByIsbn(Mockito.anyString())).thenReturn(false);
         Mockito.when(bookRepository.save(book)).thenReturn(
@@ -46,10 +45,8 @@ public class BookServiceTest {
                         .build()
         );
 
-        //Execução
         Book savedBook = bookService.save(book);
 
-        //Verificação
         assertThat(savedBook.getId()).isNotNull();
         assertThat(savedBook.getIsbn()).isEqualTo("1234");
         assertThat(savedBook.getAuthor()).isEqualTo("Fulano");
@@ -59,14 +56,11 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve lançar um erro de negócio ao tentar salvar um livro com ISBN duplicado")
     public void sholdNotSaveABookWithDuplicatedISBN(){
-        //Cenário
         Book book = createValidBook();
         Mockito.when(bookRepository.existsByIsbn(Mockito.anyString())).thenReturn(true);
 
-        //Execução
         Throwable exception =  Assertions.catchThrowable(() -> bookService.save(book));
 
-        //Validações
         assertThat(exception)
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("ISBN já cadastrado.");
@@ -78,16 +72,13 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve obter um livro por id")
     public void getByIdTeste(){
-        //Cenário
         Long id = 1l;
         Book book = createValidBook();
         book.setId(id);
         Mockito.when(bookRepository.findById(id)).thenReturn(Optional.of(book));
 
-        //Execução
         Optional<Book> foundBook = bookService.getById(id);
 
-        //Verificações
         assertThat(foundBook.isPresent()).isTrue();
         assertThat(foundBook.get().getId()).isEqualTo(id);
         assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
@@ -99,14 +90,11 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve retornar vazio ao obter um livro por id quando ele não existe na base")
     public void bookNotFoundByIdTest(){
-        //Cenário
         Long id = 1l;
         Mockito.when(bookRepository.findById(id)).thenReturn(Optional.empty());
 
-        //Execução
         Optional<Book> book = bookService.getById(id);
 
-        //Verificações
         assertThat(book.isPresent()).isFalse();
 
     }
