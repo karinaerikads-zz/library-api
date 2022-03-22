@@ -31,7 +31,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Book book) {
+        if (book == null || book.getIsbn() == null)
+            throw new IllegalArgumentException("Não é possível deletar pois o ISBN do livro é inválido");
 
+        this.bookRepository.delete(book);
     }
 
     @Override
