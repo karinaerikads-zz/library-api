@@ -27,15 +27,12 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve retornar verdadeiro quando existir um  livro com isbn cadastrado")
     public void returnTrueWhenIsbnExists(){
-        //cenário
         String isbn = "1234";
         Book book = createNewBook();
         entityManager.persist(book);
 
-        //execucao
         boolean exist = bookRepository.existsByIsbn(isbn);
 
-        //verificacao
         assertThat(exist).isTrue();
     }
 
@@ -50,13 +47,10 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve retornar falso quando não existir um  livro com isbn cadastrado")
     public void returnFalseWhenIsbnDoesntExists(){
-        //cenário
         String isbn = "1234";
 
-        //execucao
         boolean exist = bookRepository.existsByIsbn(isbn);
 
-        //verificacao
         assertThat(exist).isFalse();
 
     }
@@ -64,14 +58,11 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve obter um livro por id")
     public void findByIdTeste(){
-        //Cenário
         Book book = createNewBook();
         entityManager.persist(book);
 
-        //execução
         Optional<Book> foundBook = bookRepository.findById(book.getId());
 
-        //Verificações
         assertThat(foundBook.isPresent()).isTrue();
     }
 }
