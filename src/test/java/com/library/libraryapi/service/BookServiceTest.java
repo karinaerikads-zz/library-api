@@ -103,4 +103,14 @@ public class BookServiceTest {
         return Book.builder().isbn("1234").author("Fulano").title("As Aventuras").build();
     }
 
+    @Test
+    @DisplayName("Deleta um livro com sucesso")
+    public void deleteBookTest(){
+        Book book = Book.builder().id(1l).build();
+
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> bookService.delete(book));
+
+        Mockito.verify(bookRepository, Mockito.times(1)).delete(book);
+    }
+
 }

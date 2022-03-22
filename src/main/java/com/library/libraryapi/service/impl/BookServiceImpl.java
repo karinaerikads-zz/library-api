@@ -31,16 +31,16 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Book book) {
-        if (book == null || book.getIsbn() == null)
-            throw new IllegalArgumentException("O livro não possui ISBN ou é nulo");
+        if (book == null || book.getId() == null)
+            throw new IllegalArgumentException("Id do livro não pode ser nulo");
 
         this.bookRepository.delete(book);
     }
 
     @Override
     public Book update(Book book) {
-        if (book == null || book.getIsbn() == null)
-            throw new IllegalArgumentException("O livro não possui ISBN ou é nulo");
+        if (book == null || book.getId() == null)
+            throw new IllegalArgumentException("Id do livro não pode ser nulo");
 
         return this.bookRepository.save(book);
     }
