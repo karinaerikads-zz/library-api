@@ -68,6 +68,20 @@ public class BookRepositoryTest {
         assertThat(savedBook.getId()).isNotNull();
     }
 
+    @Test
+    @DisplayName("Deleta livro com sucesso")
+    public void deleteBookTest(){
+        Book book = createNewBook();
+        entityManager.persist(book);
+
+        Book foundBook = entityManager.find(Book.class, book.getId());
+
+        bookRepository.delete(foundBook);
+
+        Book deletedBook = entityManager.find(Book.class, book.getId());
+        assertThat(deletedBook).isNull();
+    }
+
     private Book createNewBook() {
         return Book.builder()
                 .isbn("1234")
