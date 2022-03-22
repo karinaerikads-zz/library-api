@@ -36,14 +36,6 @@ public class BookRepositoryTest {
         assertThat(exist).isTrue();
     }
 
-    private Book createNewBook() {
-        return Book.builder()
-                .isbn("1234")
-                .author("Fulano")
-                .title("As Aventuras")
-                .build();
-    }
-
     @Test
     @DisplayName("Deve retornar falso quando não existir um  livro com isbn cadastrado")
     public void returnFalseWhenIsbnDoesntExists(){
@@ -64,5 +56,13 @@ public class BookRepositoryTest {
         Optional<Book> foundBook = bookRepository.findById(book.getId());
 
         assertThat(foundBook.isPresent()).isTrue();
+    }
+
+    private Book createNewBook() {
+        return Book.builder()
+                .isbn("1234")
+                .author("Fulano")
+                .title("As Aventuras")
+                .build();
     }
 }
