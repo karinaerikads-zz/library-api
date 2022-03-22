@@ -6,6 +6,9 @@ import com.library.libraryapi.api.exception.APIErrors;
 import com.library.libraryapi.model.entity.Book;
 import com.library.libraryapi.service.BookService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
@@ -76,5 +81,17 @@ public class BookController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public APIErrors handleValidadionExceptions(BusinessException exception){
         return new APIErrors(exception);
+    }
+
+    @GetMapping
+    public Page<BookDTO> find (BookDTO bookDTO, Pageable pageRequest){
+        Book book = modelMapper.map(bookDTO, Book.class);
+        Page<Book> result = bookService.find(book, pageRequest);
+        List<BookDTO> BookDTOList = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, BookDTO.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<BookDTO>(BookDTOList, pageRequest, result.getTotalElements());
     }
 }
