@@ -1,8 +1,9 @@
 package com.library.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.libraryapi.api.dto.BookDTO;
 import com.library.libraryapi.BusinessException;
+import com.library.libraryapi.api.dto.BookDTO;
+import com.library.libraryapi.api.resouce.BookController;
 import com.library.libraryapi.model.entity.Book;
 import com.library.libraryapi.service.BookService;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc
 public class BookControllerTest {
 
