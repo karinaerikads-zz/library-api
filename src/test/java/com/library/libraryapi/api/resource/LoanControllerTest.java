@@ -48,25 +48,25 @@ public class LoanControllerTest {
 
     @Test
     @DisplayName("Criar um empréstimo com sucesso")
-        public void createLoanTest() throws Exception {
+    public void createLoanTest() throws Exception {
 
-        LoanDTO loanDTO = LoanDTO.builder().isbn("123").customer("Karina").build();
-        String json = new ObjectMapper().writeValueAsString(loanDTO);
+    LoanDTO loanDTO = LoanDTO.builder().isbn("123").customer("Karina").build();
+    String json = new ObjectMapper().writeValueAsString(loanDTO);
 
-        Book book = Book.builder().id(1l).isbn("123").build();
-        BDDMockito.given(bookService.getBookByISBN("123")).willReturn(Optional.of(book));
+    Book book = Book.builder().id(1l).isbn("123").build();
+    BDDMockito.given(bookService.getBookByISBN("123")).willReturn(Optional.of(book));
 
-        Loan loan = Loan.builder().id(1l).customer("Júlia").book(book).loanDate(LocalDate.now()).build();
-        BDDMockito.given(loanService.save(Mockito.any(Loan.class))).willReturn(loan);
+    Loan loan = Loan.builder().id(1l).customer("Júlia").book(book).loanDate(LocalDate.now()).build();
+    BDDMockito.given(loanService.save(Mockito.any(Loan.class))).willReturn(loan);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
 
-        mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andExpect(content().string("1"));
+    mvc.perform(request)
+            .andExpect(status().isCreated())
+            .andExpect(content().string("1"));
 }
 
     @Test
