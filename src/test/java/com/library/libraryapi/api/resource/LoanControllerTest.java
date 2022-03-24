@@ -1,6 +1,7 @@
 package com.library.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.library.libraryapi.BusinessException;
 import com.library.libraryapi.api.dto.LoanDTO;
 import com.library.libraryapi.api.resouce.LoanController;
 import com.library.libraryapi.model.entity.Book;
@@ -87,5 +88,29 @@ public class LoanControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", Matchers.hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value("Book not found for passed isbn"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar erro ao tentar fazer empréstimo de um livro já emprestado")
+    public void loanedBookErrorOnCreateLoanTest() throws Exception{
+
+        LoanDTO loanDTO = LoanDTO.builder().isbn("123").customer("Karina").build();
+        String json = new ObjectMapper().writeValueAsString(loanDTO);
+
+        Book book = Book.builder().id(1l).isbn("123").build();
+        BDDMockito.given(bookService.getBookByISBN("123")).willReturn(Optional.of(book));
+
+        BDDMockito.given(loanService.save(Mockito.any(Loan.class)))
+                .willThrow(new BusinessException("Book  alread loaned"));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", Matchers.hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Book  alread loaned"));
     }
 }
