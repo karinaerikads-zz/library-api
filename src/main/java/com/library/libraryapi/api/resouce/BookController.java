@@ -69,19 +69,6 @@ public class BookController {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public APIErrors handleValidadionExceptions(MethodArgumentNotValidException exception){
-        BindingResult bindingResult = exception.getBindingResult();
-        return new APIErrors(bindingResult);
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public APIErrors handleValidadionExceptions(BusinessException exception){
-        return new APIErrors(exception);
-    }
-
     @GetMapping
     public Page<BookDTO> find (BookDTO bookDTO, Pageable pageRequest){
         Book book = modelMapper.map(bookDTO, Book.class);
