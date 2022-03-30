@@ -1,9 +1,12 @@
 package com.library.libraryapi.service.impl;
 
 import com.library.libraryapi.BusinessException;
+import com.library.libraryapi.api.dto.LoanFilterDTO;
 import com.library.libraryapi.model.entity.Loan;
 import com.library.libraryapi.model.repository.LoanRepository;
 import com.library.libraryapi.service.LoanService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -31,5 +34,10 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Loan update(Loan loan) {
         return loanRepository.save(loan);
+    }
+
+    @Override
+    public Page<Loan> find(LoanFilterDTO loanFilterDTO, Pageable pageable) {
+        return null;
     }
 }
