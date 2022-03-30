@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -32,6 +34,18 @@ public class LoanServiceTest {
     @BeforeEach
     public void setUp(){
         this.loanService = new LoanServiceImpl(loanRepository);
+    }
+
+    public Loan createLoan(){
+        Book book = Book.builder().id(1l).build();
+        String customer = "Karina";
+
+        return Loan.builder()
+                .book(book)
+                .customer(customer)
+                .loanDate(LocalDate.now())
+                .customer(customer)
+                .book(book).build();
     }
 
     @Test
@@ -67,15 +81,9 @@ public class LoanServiceTest {
     @Test
     @DisplayName("Deve lançar erro de negócio ao salvar um empréstimo com livro já emprestado")
     public void loanedBookSaveTest() {
-        Book book = Book.builder().id(1l).build();
-        String customer = "Karina";
 
-        Loan loan = Loan.builder()
-                .book(book)
-                .customer(customer)
-                .loanDate(LocalDate.now())
-                .customer(customer)
-                .book(book).build();
+        Book book = Book.builder().id(1l).build();
+        Loan loan = createLoan();
 
         when(loanRepository.existsByBookAndReturned(book)).thenReturn(true);
 
@@ -86,5 +94,38 @@ public class LoanServiceTest {
                 .hasMessage("Book already loaned");
 
         verify(loanRepository, never()).save(loan);
+    }
+
+    @Test
+    @DisplayName("Deve obter as informações de um empréstimo pelo ID")
+    public void getLoanDetailsTest(){
+        Long id = 1l;
+        Loan loan = createLoan();
+        loan.setId(1l);
+
+        Mockito.when(loanRepository.findById(id)).thenReturn(Optional.of(loan));
+        Optional<Loan> result = loanService.getById(id);
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getId()).isEqualTo(id);
+        assertThat(result.get().getCustomer()).isEqualTo(loan.getCustomer());
+        assertThat(result.get().getBook()).isEqualTo(loan.getBook());
+        assertThat(result.get().getLoanDate()).isEqualTo(loan.getLoanDate());
+
+        verify(loanRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Deve atualizar um empréstimo")
+    public void updateLoanTest(){
+        Loan loan = createLoan();
+        loan.setId(1l);
+        loan.setReturned(true);
+
+        when(loanRepository.save(loan)).thenReturn(loan);
+        Loan updatedLoan = loanService.update(loan);
+
+        assertThat(updatedLoan.getReturned()).isTrue();
+        verify(loanRepository).save(loan);
     }
 }
