@@ -1,8 +1,10 @@
 package com.library.libraryapi.api.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.libraryapi.BusinessException;
 import com.library.libraryapi.api.dto.LoanDTO;
+import com.library.libraryapi.api.dto.ReturnedLoanDto;
 import com.library.libraryapi.api.resouce.LoanController;
 import com.library.libraryapi.model.entity.Book;
 import com.library.libraryapi.model.entity.Loan;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -112,5 +115,25 @@ public class LoanControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", Matchers.hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value("Book  alread loaned"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar um livro")
+    public void returnedBookTest() throws Exception {
+
+        ReturnedLoanDto returnedLoanDto = ReturnedLoanDto.builder().returned(true).build();
+        Loan loan = Loan.builder().id(1l).build();
+        BDDMockito.given(loanService.getById(Mockito.anyLong())).willReturn(Optional.of(loan));
+
+        String json = new ObjectMapper().writeValueAsString(returnedLoanDto);
+
+        mvc.perform(
+                patch(LOAN_API.concat("/1"))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        ).andExpect(status().isOk());
+
+        Mockito.verify(loanService, Mockito.times(1)).update(loan);
     }
 }

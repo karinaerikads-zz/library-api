@@ -5,6 +5,8 @@ import com.library.libraryapi.model.entity.Loan;
 import com.library.libraryapi.model.repository.LoanRepository;
 import com.library.libraryapi.service.LoanService;
 
+import java.util.Optional;
+
 public class LoanServiceImpl implements LoanService {
 
     private LoanRepository loanRepository;
@@ -19,5 +21,15 @@ public class LoanServiceImpl implements LoanService {
             throw new BusinessException("Book already loaned");
 
         return loanRepository.save(loan);
+    }
+
+    @Override
+    public Optional<Loan> getById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Loan update(Loan loan) {
+        return null;
     }
 }
