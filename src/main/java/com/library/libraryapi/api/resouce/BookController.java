@@ -8,6 +8,8 @@ import com.library.libraryapi.service.BookService;
 import com.library.libraryapi.service.LoanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -53,6 +55,7 @@ public class BookController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Deletes a book by id")
+    @ApiResponses({@ApiResponse(code = 204, message = "Book succesfully deleted")})
     public void delete(@PathVariable Long id){
         Book book = bookService.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
