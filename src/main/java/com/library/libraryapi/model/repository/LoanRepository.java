@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("select case when (count(l.id) > 0 ) then true else false end " +
@@ -19,4 +21,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     Page<Loan> findByBookIsbnOrCustomer(@Param("isbn") String isbn, @Param("customer") String customer, Pageable pageable);
 
     Page<Loan> findByBook(Book book, Pageable pageable);
+
+    @Query("select loan from Loan loan where loan.loanDate <= :threeDaysAgo and (loan.returned is null or loan.returned is not false)")
+    List<Loan> findByLoanDateLessThanAndNotReturned();
 }
