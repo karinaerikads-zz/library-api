@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.library.libraryapi.model.repository.BookRepositoryTest.createNewBook;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,11 +30,11 @@ public class LoanRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    private Loan createAndPersistLoan() {
+    private Loan createAndPersistLoan(LocalDate loanDate) {
         Book book = createNewBook();
         entityManager.persist(book);
 
-        Loan loan = Loan.builder().book(book).customer("Karina").loanDate(LocalDate.now()).build();
+        Loan loan = Loan.builder().book(book).customer("Karina").loanDate(loanDate).build();
         entityManager.persist(loan);
 
         return loan;
@@ -43,7 +44,7 @@ public class LoanRepositoryTest {
     @DisplayName("Deve verificar se existe empréstimo não devolvido para o livro")
     public void existsByBookAndNotReturnedTest(){
 
-        Loan loan = createAndPersistLoan();
+        Loan loan = createAndPersistLoan(LocalDate.now());
 
         boolean exists = loanRepository.existsByBookAndReturned(loan.getBook());
 
@@ -54,7 +55,7 @@ public class LoanRepositoryTest {
     @Test
     @DisplayName("Deve buscar empréstimo pelo ISBN do livro ou customer")
     public void findByLoanIsbnOrCustomerTest(){
-        Loan loan = createAndPersistLoan();
+        Loan loan = createAndPersistLoan(LocalDate.now());
 
         Page<Loan> result = loanRepository.findByBookIsbnOrCustomer("123", "Karina", PageRequest.of(0, 10));
 
@@ -63,6 +64,14 @@ public class LoanRepositoryTest {
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Deve obter empréstimo cuja data empréstimo for menor ou igual a três dias atrás e não retornados")
+    public void findByLoanDateLessThanAndNotReturnedTest(){
+        Loan loan = createAndPersistLoan(LocalDate.now().minusDays(5));
+        List<Loan> result = loanRepository.findByLoanDateLessThanAndNotReturned(LocalDate.now().minusDays(4));
+        assertThat(result).hasSize(1).contains(loan);
     }
 
 }
