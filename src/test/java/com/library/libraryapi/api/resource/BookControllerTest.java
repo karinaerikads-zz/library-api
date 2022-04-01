@@ -6,6 +6,7 @@ import com.library.libraryapi.api.dto.BookDTO;
 import com.library.libraryapi.api.resouce.BookController;
 import com.library.libraryapi.model.entity.Book;
 import com.library.libraryapi.service.BookService;
+import com.library.libraryapi.service.LoanService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +47,9 @@ public class BookControllerTest {
 
     @MockBean
     BookService bookService;
+
+    @MockBean
+    LoanService loanService;
 
     @Test
     @DisplayName("Deve criar um livro com sucesso")
